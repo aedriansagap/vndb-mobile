@@ -81,9 +81,10 @@ export const HomeScreen = ({ navigation }: any) => {
             </View>
           ) : null
         )}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <VnCard 
             vn={item} 
+            index={index}
             onPress={() => navigation.navigate('Details', { vn: item })} 
           />
         )}

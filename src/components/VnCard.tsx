@@ -1,19 +1,23 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { FadeInView } from './animations/FadeInView';
+import { ScaleButton } from './animations/ScaleButton';
 import { VN } from '../api/vndb';
 import { colors, spacing, borderRadius } from '../theme/colors';
 
 interface VnCardProps {
   vn: VN;
+  index?: number;
   onPress: () => void;
 }
 
-export const VnCard: React.FC<VnCardProps> = ({ vn, onPress }) => {
+export const VnCard: React.FC<VnCardProps> = ({ vn, index = 0, onPress }) => {
   const imageUrl = vn.image?.url;
 
   return (
-    <TouchableOpacity style={styles.container} activeOpacity={0.8} onPress={onPress}>
+    <FadeInView delay={Math.min(index * 50, 500)} style={styles.containerWrapper}>
+      <ScaleButton style={styles.container} onPress={onPress}>
       {imageUrl ? (
         <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="cover" />
       ) : (
@@ -39,15 +43,18 @@ export const VnCard: React.FC<VnCardProps> = ({ vn, onPress }) => {
           ) : null}
         </View>
       </View>
-    </TouchableOpacity>
+      </ScaleButton>
+    </FadeInView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerWrapper: {
     flex: 1,
-    height: 240,
     margin: spacing.sm,
+  },
+  container: {
+    height: 240,
     borderRadius: borderRadius.md,
     backgroundColor: colors.surface,
     overflow: 'hidden',

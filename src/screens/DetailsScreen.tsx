@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Star } from 'lucide-react-native';
+import { FadeInView } from '../components/animations/FadeInView';
+import { ScaleButton } from '../components/animations/ScaleButton';
 import { fetchVNCharacters, fetchVNReleases, fetchTags, Character, Release, Tag, VN } from '../api/vndb';
 import { colors, spacing, borderRadius } from '../theme/colors';
 
@@ -55,13 +57,13 @@ export const DetailsScreen = ({ route, navigation }: any) => {
   const renderTabs = () => (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabContainer} contentContainerStyle={{ paddingHorizontal: spacing.md }}>
       {['About', 'Characters', 'Releases', 'Tags'].map(tab => (
-        <TouchableOpacity 
+        <ScaleButton 
           key={tab} 
           style={[styles.tabButton, activeTab === tab && styles.activeTabButton]}
           onPress={() => setActiveTab(tab as any)}
         >
           <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>{tab}</Text>
-        </TouchableOpacity>
+        </ScaleButton>
       ))}
     </ScrollView>
   );
@@ -83,20 +85,20 @@ export const DetailsScreen = ({ route, navigation }: any) => {
         <Text style={styles.emptyText}>No characters found.</Text>
       ) : (
         <View style={styles.characterGrid}>
-          {characters.map((char) => (
-            <TouchableOpacity 
-              key={char.id} 
-              style={styles.characterCard}
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate('CharacterDetails', { character: char })}
-            >
-              {char.image?.url ? (
-                <Image source={{ uri: char.image.url }} style={styles.characterImage} />
-              ) : (
-                <View style={[styles.characterImage, { backgroundColor: colors.surfaceLight }]} />
-              )}
-              <Text style={styles.characterName} numberOfLines={1}>{char.name}</Text>
-            </TouchableOpacity>
+          {characters.map((char, index) => (
+            <FadeInView key={char.id} delay={Math.min(index * 30, 400)} slideUpOffset={10} style={styles.characterCardWrapper}>
+              <ScaleButton 
+                style={styles.characterCard}
+                onPress={() => navigation.navigate('CharacterDetails', { character: char })}
+              >
+                {char.image?.url ? (
+                  <Image source={{ uri: char.image.url }} style={styles.characterImage} />
+                ) : (
+                  <View style={[styles.characterImage, { backgroundColor: colors.surfaceLight }]} />
+                )}
+                <Text style={styles.characterName} numberOfLines={1}>{char.name}</Text>
+              </ScaleButton>
+            </FadeInView>
           ))}
         </View>
       )}
@@ -183,10 +185,12 @@ export const DetailsScreen = ({ route, navigation }: any) => {
 
         {renderTabs()}
 
-        {activeTab === 'About' && renderAbout()}
-        {activeTab === 'Characters' && renderCharacters()}
-        {activeTab === 'Releases' && renderReleases()}
-        {activeTab === 'Tags' && renderTags()}
+        <FadeInView key={activeTab} delay={0} duration={250} slideUpOffset={8}>
+          {activeTab === 'About' && renderAbout()}
+          {activeTab === 'Characters' && renderCharacters()}
+          {activeTab === 'Releases' && renderReleases()}
+          {activeTab === 'Tags' && renderTags()}
+        </FadeInView>
 
       </ScrollView>
     </View>
@@ -300,9 +304,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
-  characterCard: {
+  characterCardWrapper: {
     width: '30%',
     marginBottom: spacing.md,
+  },
+  characterCard: {
+    width: '100%',
   },
   characterImage: {
     width: '100%',
