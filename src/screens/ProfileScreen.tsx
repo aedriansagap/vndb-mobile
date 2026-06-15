@@ -7,7 +7,7 @@ import { colors, spacing, borderRadius } from '../theme/colors';
 
 const TOKEN_KEY = '@vndb_auth_token';
 
-export const ProfileScreen = () => {
+export const ProfileScreen = ({ navigation }: any) => {
   const [tokenInput, setTokenInput] = useState('');
   const [token, setToken] = useState<string | null>(null);
   const [authInfo, setAuthInfo] = useState<any>(null);
@@ -45,7 +45,7 @@ export const ProfileScreen = () => {
     try {
       const info = await fetchAuthInfo(activeToken);
       setAuthInfo(info);
-      const listData = await fetchUserList(activeToken);
+      const listData = await fetchUserList(activeToken, info.id);
       setUserList(listData.results || []);
     } catch (e: any) {
       setError(e.message || 'Failed to authenticate');
@@ -138,7 +138,11 @@ export const ProfileScreen = () => {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
           renderItem={({ item }) => (
-            <View style={styles.listItem}>
+            <TouchableOpacity 
+              style={styles.listItem} 
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('Details', { vn: item.vn })}
+            >
               {item.vn?.image?.url ? (
                 <Image source={{ uri: item.vn.image.url }} style={styles.listImage} />
               ) : (
@@ -150,7 +154,7 @@ export const ProfileScreen = () => {
                   <Text style={styles.listVote}>Score: {(item.vote / 10).toFixed(1)}</Text>
                 )}
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       )}

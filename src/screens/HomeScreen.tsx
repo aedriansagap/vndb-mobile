@@ -55,10 +55,7 @@ export const HomeScreen = ({ navigation }: any) => {
         renderItem={({ item }) => (
           <VnCard 
             vn={item} 
-            onPress={() => {
-              // TODO: Navigate to Details screen
-              console.log('Pressed', item.title);
-            }} 
+            onPress={() => navigation.navigate('Details', { vn: item })} 
           />
         )}
       />

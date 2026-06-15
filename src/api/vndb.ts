@@ -108,7 +108,7 @@ export const fetchAuthInfo = async (token: string) => {
     const response = await fetch(`${API_BASE_URL}/authinfo`, {
       method: 'GET',
       headers: {
-        'Authorization': `token ${token}`,
+        'Authorization': `Token ${token}`,
       },
     });
     if (!response.ok) throw new Error('Invalid token');
@@ -118,19 +118,16 @@ export const fetchAuthInfo = async (token: string) => {
   }
 };
 
-export const fetchUserList = async (token: string) => {
-  // To keep it simple, we just query the VN endpoint and filter by the user's list.
-  // According to Kana API, ulists can be fetched via 'ulist' endpoint or by querying 'vn' with ['list', '=', 'all'] or similar if auth token is present.
-  // We will fetch the 'ulist' endpoint.
+export const fetchUserList = async (token: string, userId: string) => {
   try {
     const response = await fetch(`${API_BASE_URL}/ulist`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `token ${token}`,
+        'Authorization': `Token ${token}`,
       },
       body: JSON.stringify({
-        user: "me",
+        user: userId,
         results: 20,
         fields: "id, vn.title, vn.image.url, vote",
       }),
