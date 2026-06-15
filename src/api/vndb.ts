@@ -88,10 +88,6 @@ export interface Character {
     dims: number[];
   } | null;
   description: string | null;
-  vns: {
-    id: string;
-    role: string;
-  }[];
 }
 
 export const fetchVNCharacters = async (vnId: string) => {
@@ -99,7 +95,7 @@ export const fetchVNCharacters = async (vnId: string) => {
     endpoint: 'character',
     filters: ['vn', '=', ['id', '=', vnId]],
     results: 20,
-    fields: 'id, name, original, image.url, description, vns.role',
+    fields: 'id, name, original, image.url, description',
   });
 };
 
