@@ -7,6 +7,7 @@ import { Home, Search, User } from 'lucide-react-native';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { SearchScreen } from './src/screens/SearchScreen';
 import { DetailsScreen } from './src/screens/DetailsScreen';
+import { CharacterDetailsScreen } from './src/screens/CharacterDetailsScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { colors } from './src/theme/colors';
 
@@ -79,6 +80,7 @@ export default function App() {
       >
         <Stack.Screen name="Main" component={TabNavigator} />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="CharacterDetails" component={CharacterDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

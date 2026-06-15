@@ -129,7 +129,7 @@ export const fetchUserList = async (token: string, userId: string) => {
       body: JSON.stringify({
         user: userId,
         results: 20,
-        fields: "id, vn.title, vn.image.url, vote",
+        fields: "id, vn.id, vn.title, vn.alttitle, vn.image.url, vn.image.sexual, vn.image.violence, vn.description, vn.rating, vote",
       }),
     });
     if (!response.ok) throw new Error('Failed to fetch list');

@@ -74,14 +74,19 @@ export const DetailsScreen = ({ route, navigation }: any) => {
           ) : (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.characterScroll}>
               {characters.map((char) => (
-                <View key={char.id} style={styles.characterCard}>
+                <TouchableOpacity 
+                  key={char.id} 
+                  style={styles.characterCard}
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate('CharacterDetails', { character: char })}
+                >
                   {char.image?.url ? (
                     <Image source={{ uri: char.image.url }} style={styles.characterImage} />
                   ) : (
                     <View style={[styles.characterImage, { backgroundColor: colors.surfaceLight }]} />
                   )}
                   <Text style={styles.characterName} numberOfLines={1}>{char.name}</Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </ScrollView>
           )}
