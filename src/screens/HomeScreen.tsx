@@ -7,23 +7,43 @@ import { colors, spacing } from '../theme/colors';
 export const HomeScreen = ({ navigation }: any) => {
   const [vns, setVns] = useState<VN[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchPopularVNs();
-        setVns(data.results);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch visual novels');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadData = async (pageNum: number) => {
+    try {
+      if (pageNum === 1) setLoading(true);
+      else setLoadingMore(true);
 
-    loadData();
+      const data = await fetchPopularVNs(pageNum);
+      
+      if (pageNum === 1) {
+        setVns(data.results);
+      } else {
+        setVns((prev) => [...prev, ...data.results]);
+      }
+      
+      setHasMore(data.more || false);
+      setPage(pageNum);
+    } catch (err: any) {
+      setError(err.message || 'Failed to fetch visual novels');
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData(1);
   }, []);
+
+  const loadMore = () => {
+    if (!loadingMore && hasMore) {
+      loadData(page + 1);
+    }
+  };
 
   if (loading) {
     return (
@@ -52,6 +72,15 @@ export const HomeScreen = ({ navigation }: any) => {
         keyExtractor={(item) => item.id}
         numColumns={2}
         contentContainerStyle={styles.listContainer}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={() => (
+          loadingMore ? (
+            <View style={{ padding: spacing.md, alignItems: 'center' }}>
+              <ActivityIndicator size="small" color={colors.primary} />
+            </View>
+          ) : null
+        )}
         renderItem={({ item }) => (
           <VnCard 
             vn={item} 
